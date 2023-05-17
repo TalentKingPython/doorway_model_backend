@@ -25,21 +25,9 @@ module.exports = (sequelize, Sequelize) => {
         state: {
             type: Sequelize.STRING
         },
-        doorway_model: {
-            type: Sequelize.STRING
+        purchaseList: {
+            type: Sequelize.TEXT
         },
-        doorHandleType: {
-            type: Sequelize.STRING
-        },
-        glassType: {
-            type: Sequelize.STRING
-        },
-        height: {
-            type: Sequelize.INTEGER
-        },
-        width: {
-            type: Sequelize.INTEGER
-        }
     });
     return User;
 };

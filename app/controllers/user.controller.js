@@ -35,11 +35,7 @@ exports.createUser = (req, res) => {
     city: req.body.city,
     // state: 'To Do',
     state: req.body.state,
-    doorway_model: req.body.doorway_model,
-    doorHandleType:req.body.doorHandleType,
-    glassType:req.body.glassType,
-    height: req.body.height,
-    width: req.body.width
+    purchaseList: req.body.purchaseList
   })
     .then(result => {
       res.status(200).send(result);
@@ -61,11 +57,7 @@ exports.updateUser = (req, res) => {
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,
-      doorway_model: req.body.doorway_model,
-      doorHandleType:req.body.doorHandleType,
-      glassType:req.body.glassType,
-      height: req.body.height,
-      width: req.body.width
+      purchaseList: req.body.purchaseList
     }, {
     where: {
       id: req.params.id
