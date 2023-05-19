@@ -1,7 +1,6 @@
 const db = require("../models");
 
 User = db.user;
-Door = db.door
 
 // Get All Datas
 exports.findAllUsers = (req, res) => {
@@ -75,4 +74,8 @@ exports.deleteUser = async (req, res) => {
   } catch (error) {
     console.log(error)
   }
+};
+
+exports.createUser = (req, res) => {
+  
 };

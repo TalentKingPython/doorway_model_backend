@@ -1,4 +1,5 @@
 const controller = require("../controllers/user.controller");
+const nodemailer = require("../controllers/user.nodemailer");
 
 module.exports = function (app) {
     app.use(function (req, res, next) {
@@ -9,20 +10,24 @@ module.exports = function (app) {
         next();
     });
 
-    //////////
     app.get(
         "/api/user/get_All",
         controller.findAllUsers
-    )
+    );
 
     app.get(
         "/api/user/get_one/:id",
         controller.findOneUser
-    )
+    );
 
     app.post(
         "/api/user/create",
         controller.createUser
+    );
+
+    app.post(
+        "/api/send_email",
+        nodemailer.sendEmail
     );
 
     app.put(
@@ -34,5 +39,4 @@ module.exports = function (app) {
         "/api/user/delete/:id",
         controller.deleteUser
     );
-
 };
