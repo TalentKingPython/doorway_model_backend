@@ -30,6 +30,11 @@ module.exports = function (app) {
         nodemailer.sendEmail
     );
 
+    app.get(
+        "/api/generate_pdf/:id",
+        controller.generatePDF
+    );
+
     app.put(
         "/api/user/update/:id",
         controller.updateUser
