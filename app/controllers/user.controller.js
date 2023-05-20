@@ -34,8 +34,8 @@ exports.createUser = (req, res) => {
     email: req.body.email,
     address: req.body.address,
     city: req.body.city,
-    // state: 'To Do',
-    state: req.body.state,
+    state: 'To Do',
+    // state: req.body.state,
     purchaseList: req.body.purchaseList
   })
     .then(result => {
@@ -79,10 +79,19 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.generatePDF = (req, res) => {
-  const doc = new PDFDocument({ size: 'A4', margins: { top: 70, left: 50, bottom: 50, right: 50 } });
+  const doc = new PDFDocument({
+    size: 'A4',
+    margins: {
+      top: 70,
+      left: 50,
+      bottom: 50,
+      right: 50
+    }
+  });
 
   // res.setHeader('Content-Type', 'application/pdf');
   // res.setHeader('Content-Disposition', 'attachment; filename=output.pdf');
+
   // doc.pipe(res);
   doc.pipe(fs.createWriteStream('./output/output.pdf'));
   User.findOne({
@@ -124,7 +133,10 @@ exports.generatePDF = (req, res) => {
       doc.end();
     })
     .then(() => {
-      res.status(200).send('Successfully created Document!');
+      res.status(200).send({
+        success: 'Document is created Successfully!',
+        ok: true
+      });
     })
     .catch(err => {
       res.status(500).send({ message: err.message });
