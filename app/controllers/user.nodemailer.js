@@ -1,58 +1,81 @@
-const { CourierClient } = require("@trycourier/courier");
-// const sgMail = require('@sendgrid/mail');
+const sgMail = require('@sendgrid/mail');
+const dotenv = require('dotenv');
+dotenv.config();
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const fs = require("fs");
-
-const courier = CourierClient({ authorizationToken: "pk_test_R8G7HKCWPPMR89K6EVYYMBCJK67B" });
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.sendEmail = (req, res) => {
   const pdf = fs.readFileSync("./output/output.pdf");
 
-  courier.send({
-    message: {
-      to: [
-        {
-          data: {
-            title: "Thanks for loving our products!",
-            content: "Dear, " + req.body.name + "! This is your order list!",
+  const msg_client = {
+    from: 'jewelrystoremaster0105@protonmail.com',
+    personalizations: [
+      {
+        to: [
+          {
+            email: req.body.email,
           },
-          email: req.body.email,
-          attachments: [
-            {
-              type: "application/pdf",
-              name: "order.pdf",
-              content: pdf.toString("base64"),
-            },
-          ],
-        },
-        {
-          data: {
-            title: "A New Order!",
-            content: "Hi, Admin! This is Client " + req.body.name + "'s order list!"
+        ],
+        dynamic_template_data: {
+          subject: 'Welcome to Vanharte!',
+          title: 'Welcome\nto Vanharte!',
+          content: 'Dear ' + req.body.firstname + '! Thanks to order our products!\n\n This is your order list.'
+        }
+      }
+    ],
+    template_id: 'd-0df1f6a9fa954d85974ec5dd622333ad',
+    attachments: [
+      {
+        content: pdf.toString('base64'),
+        filename: 'file.pdf',
+        type: 'application/pdf',
+        disposition: 'attachment'
+      }
+    ]
+  };
+
+  const msg_admin = {
+    from: 'jewelrystoremaster0105@protonmail.com',
+    personalizations: [
+      {
+        to: [
+          {
+            email: 'prettywebdev0105@gmail.com'
           },
-          email: "prettywebdev0105@gmail.com",
-          attachments: [
-            {
-              type: "application/pdf",
-              name: "order.pdf",
-              content: pdf.toString("base64"),
-            },
-          ],
-        },
-      ],
-      content: {
-        title: "{{title}}",
-        body: "{{content}}",
-      },
-      routing: {
-        method: "all",
-        channels: ["email"],
-      },
-    },
-  })
+        ],
+        dynamic_template_data: {
+          subject: 'A New Order!',
+          title: 'A New Order!',
+          content: 'This is a new order from customer ' + req.body.firstname + ' ' + req.body.lastname + '!'
+        }
+      }
+    ],
+    template_id: 'd-0df1f6a9fa954d85974ec5dd622333ad',
+    attachments: [
+      {
+        content: pdf.toString('base64'),
+        filename: 'file.pdf',
+        type: 'application/pdf',
+        disposition: 'attachment'
+      }
+    ]
+  };
+
+  sgMail.send(msg_client)
     .then((result) => {
-      console.log('Email sent', result);
-      res.status(200).send({ message: "Email sent successfully" });
+      if (result[0].statusCode == 202) {
+        sgMail.send(msg_admin)
+          .then((result) => {
+            console.log('Client Email sent', result);
+            res.status(200).send({
+              message1: "Emails are sent successfully",
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send({ error: error });
+          });
+      }
     })
     .catch((error) => {
       console.error(error);
