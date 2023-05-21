@@ -1,63 +1,61 @@
-// const mailer = require('nodemailer');
+const { CourierClient } = require("@trycourier/courier");
+// const sgMail = require('@sendgrid/mail');
+const fs = require("fs");
 
-// let transporter = mailer.createTransport({
-//   host: 'smtp.gmail.com',
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: 'prettywebdev0105@gmail.com',
-//     pass: 'i@m@prettywebdeveloper'
-//   }
-// });
-
-// let mailOptions = {
-//   from: 'prettywebdev0105@gmail.com',
-//   to: 'ssguardheaker@gmail.com',
-//   subject: 'Sending PDF file using Node.js',
-//   text: 'Please find attached the PDF file.',
-//   // attachments: [
-//   //     {
-//   //         filename: 'example.pdf',
-//   //         path: '/path/to/example.pdf'
-//   //     }
-//   // ]
-// };
-
-// exports.sendEmail = (req, res) => {
-//   transporter.sendMail(mailOptions, function (error, info) {
-//     if (error) {
-//       console.log(error);
-//     } else {
-//       console.log('Email sent: ' + info.response);
-//     }
-//   });
-// };
-
-
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-const msg = {
-  to: 'ssguardheaker@gmail.com',
-  from: 'prettywebdev0105@gmail.com',
-  subject: 'Sending PDF file using Node.js',
-  text: 'Please find attached the PDF file.',
-  // attachments: [
-  //     {
-  //         filename: 'example.pdf',
-  //         path: '/path/to/example.pdf'
-  //     }
-  // ]
-};
+const courier = CourierClient({ authorizationToken: "pk_test_R8G7HKCWPPMR89K6EVYYMBCJK67B" });
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.sendEmail = (req, res) => {
-  sgMail.send(msg)
-    .then(() => {
-      console.log('Email sent');
-      res.status(200).send('Email sent');
+  const pdf = fs.readFileSync("./output/output.pdf");
+
+  courier.send({
+    message: {
+      to: [
+        {
+          data: {
+            title: "Thanks for loving our products!",
+            content: "Dear, " + req.body.name + "! This is your order list!",
+          },
+          email: req.body.email,
+          attachments: [
+            {
+              type: "application/pdf",
+              name: "order.pdf",
+              content: pdf.toString("base64"),
+            },
+          ],
+        },
+        {
+          data: {
+            title: "A New Order!",
+            content: "Hi, Admin! This is Client " + req.body.name + "'s order list!"
+          },
+          email: "prettywebdev0105@gmail.com",
+          attachments: [
+            {
+              type: "application/pdf",
+              name: "order.pdf",
+              content: pdf.toString("base64"),
+            },
+          ],
+        },
+      ],
+      content: {
+        title: "{{title}}",
+        body: "{{content}}",
+      },
+      routing: {
+        method: "all",
+        channels: ["email"],
+      },
+    },
+  })
+    .then((result) => {
+      console.log('Email sent', result);
+      res.status(200).send({ message: "Email sent successfully" });
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).send('Error sending email');
+      res.status(500).send({ error: error });
     });
 };
