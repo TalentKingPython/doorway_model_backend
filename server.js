@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const dotenv = require('dotenv');
+dotenv.config();
 const axios = require("axios");
 
 const app = express();
@@ -30,23 +32,23 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
-app.post("/api/third_party_api", (req, res) => {
+app.post("/api/wefact_api", (req, res) => {
   const url = 'https://api.mijnwefact.nl/v2/';
   const body = {
-    api_key: '1547ed6ac7a15ec4dbc5e27fb59ad2b0',
+    api_key: process.env.WEFACT_API_KEY,
     controller: 'debtor',
     action: 'show',
-    DebtorCode: req.params.code
+    DebtorCode: 'DB' + (10000 + Number(req.body.code))
   };
 
   try {
-    console.log("response"); 
     axios.post(url, body)
     .then(response => {
-      console.log(response.data); 
-      res.send(response.data);
-      // res.send(JSON.stringify(response.data));
-    });
+        // console.log("respose", body);
+        console.log(response.data);
+        res.send(response.data);
+        // res.send(JSON.stringify(response.data));
+      });
   } catch (error) {
     console.log(error);
   }
