@@ -37,8 +37,7 @@ app.post("/api/wefact_api", (req, res) => {
   const body = {
     api_key: process.env.WEFACT_API_KEY,
     controller: 'debtor',
-    action: 'show',
-    DebtorCode: 'DB' + (10000 + Number(req.body.code))
+    action: 'list',
   };
 
   try {

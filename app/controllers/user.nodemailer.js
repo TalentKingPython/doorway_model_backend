@@ -6,14 +6,17 @@ const fs = require("fs");
 
 exports.sendEmail = (req, res) => {
   const pdf = fs.readFileSync("./output/output.pdf");
-
+  let admin_email = 'prettywebdev0105@gmail.com';
+  let email = admin_email;
+  if(req.body.email) email=req.body.email;
+  console.log(email);
   const msg_client = {
     from: 'jewelrystoremaster0105@protonmail.com',
     personalizations: [
       {
         to: [
           {
-            email: req.body.email,
+            email: (email.includes('@') && email.includes('.')) ? email : admin_email,
           },
         ],
         dynamic_template_data: {
@@ -40,13 +43,13 @@ exports.sendEmail = (req, res) => {
       {
         to: [
           {
-            email: 'prettywebdev0105@gmail.com'
+            email: admin_email,
           },
         ],
         dynamic_template_data: {
           subject: 'A New Order!',
           title: 'A New Order!',
-          content: 'This is a new order from customer ' + req.body.firstname + ' ' + req.body.lastname + '!'
+          content: 'This is a new order from customer ' + req.body.lastname + '!'
         }
       }
     ],
