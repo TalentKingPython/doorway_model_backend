@@ -26,6 +26,7 @@ exports.findOneUser = (req, res) => {
 // Create New User
 exports.createUser = (req, res) => {
   // Save User to Userbase
+  console.log(req);
   User.create({
     firstname: req.body.firstname,
     lastname: req.body.lastname,

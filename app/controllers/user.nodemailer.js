@@ -6,7 +6,7 @@ const fs = require("fs");
 
 exports.sendEmail = (req, res) => {
   const pdf = fs.readFileSync("./output/output.pdf");
-  let admin_email = 'prettywebdev0105@gmail.com';
+  let admin_email = 'akol66@gmail.com';
   let email = admin_email;
   if(req.body.email) email=req.body.email;
   console.log(email);
