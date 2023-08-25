@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
 dotenv.config();
 const axios = require("axios");
 
@@ -21,6 +22,9 @@ app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+
+app.use(express.static(path.join(__dirname, "public")));
+
 
 // database
 const db = require("./app/models");
@@ -50,7 +54,7 @@ app.post("/api/wefact_api", (req, res) => {
   try {
     axios.post(url, body).then((response) => {
       // console.log("respose", body);
-      console.log(response.data);
+      // console.log(response.data);
       res.send(response.data);
       // res.send(JSON.stringify(response.data));
     });
@@ -60,6 +64,15 @@ app.post("/api/wefact_api", (req, res) => {
 });
 
 require("./app/routes/user.routes")(app);
+
+app.get("/*", function (req, res) {
+  res.sendFile(path.join(__dirname, "public/index.html"), function (err) {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

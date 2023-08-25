@@ -2,7 +2,7 @@ const db = require("../models");
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
-User = db.user;
+const User = db.user;
 
 // Get All Datas
 exports.findAllUsers = (req, res) => {
@@ -31,7 +31,7 @@ exports.createUser = (req, res) => {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     companyname: req.body.companyname,
-    phone: req.body.phone,
+    phone: 123123,
     email: req.body.email,
     address: req.body.address,
     city: req.body.city,
